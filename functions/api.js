@@ -27,6 +27,20 @@ const transporter = nodemailer.createTransport({
     minVersion: "TLSv1.2",
   },
 });
+
+const transporter2 = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false, // Set to false for STARTTLS
+  auth: {
+    user: "foranyuse2221@gmail.com",
+    pass: "driankvjuompwcjt",
+  },
+  // Specify the desired SSL/TLS version
+  tls: {
+    minVersion: "TLSv1.2",
+  },
+});
 ///
 // Define the route to handle the form submission and send the email
 router.post("/send-email", (req, res) => {
@@ -42,6 +56,29 @@ router.post("/send-email", (req, res) => {
 
   // Send the email
   transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.error("Error sending email:", error);
+      res.status(500).json({ error: "Error sending email" });
+    } else {
+      console.log("Email sent:", info.response);
+      res.json({ message: "Email sent successfully" });
+    }
+  });
+});
+
+router.post("/send-email-2", (req, res) => {
+  const { name, email, subject, message } = req.body;
+
+  // Set up the email content
+  const mailOptions = {
+    from: "foranyuse2221@gmail.com",
+    to: "foranyuse2221@gmail.com", // Replace with the recipient email address
+    subject: `New Message from ${name}: ${subject}`,
+    text: `Name: ${name}\nEmail: ${email}\n\nMessage: ${message}`,
+  };
+
+  // Send the email
+  transporter2.sendMail(mailOptions, (error, info) => {
     if (error) {
       console.error("Error sending email:", error);
       res.status(500).json({ error: "Error sending email" });
